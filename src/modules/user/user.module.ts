@@ -1,3 +1,4 @@
+import { BabiesModule } from './../babies/babies.module';
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
@@ -12,7 +13,8 @@ import { User, UserSchemaFactory } from './entities/user.entity';
         inject: [],
         imports: [MongooseModule.forFeature([])],
       }
-    ])
+    ]), 
+    BabiesModule
   ],
   controllers: [UserController],
   providers: [UserService],

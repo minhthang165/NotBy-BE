@@ -2,6 +2,7 @@ import { HydratedDocument } from 'mongoose';
 import { Constructor } from './../../../../node_modules/ts-jest/node_modules/type-fest/source/basic.d';
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { NextFunction } from 'express';
+import { BaseEntity } from 'src/modules/shared/base.entity';
 
 export type UserDocument = HydratedDocument<User>
 
@@ -15,7 +16,20 @@ export type UserDocument = HydratedDocument<User>
 		virtuals: true,
 	},
 })
-export class User{
+export class User extends BaseEntity {
+	
+	@Prop({ required: true })
+	firstName: string;
+
+	@Prop({ required: true })
+	lastName: string;
+	
+	@Prop({ required: true })
+	dob: Date;
+
+	@Prop({ required: true, unique: true })
+	phoneNumber: string;
+
     @Prop({ unique: true })
     email: string;
 
@@ -28,7 +42,7 @@ export class User{
     @Prop()
     photo: string;
 
-	@Prop({ default: 'user', enum: ['User', 'Admin', 'HR'] })
+	@Prop({ default: 'Parent', enum: ['Parent', 'Admin'] })
   	role: string;
 }
 
@@ -37,7 +51,6 @@ export const UserSchemaFactory = () => {
 	const userSchema = UserSchema;
 
 	userSchema.pre('findOneAndDelete', async function (next: NextFunction) {
-		// OTHER USEFUL METHOD: getOptions, getPopulatedPaths, getQuery = getFilter, getUpdate
 		const user = await this.model.findOne(this.getFilter());
 		await Promise.all([]);
 		return next();

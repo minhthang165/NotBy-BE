@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './entities/user.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
@@ -28,9 +28,48 @@ export class UserService {
     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
   }
 
-  async findAll(): Promise<UserDocument[]> {
-    return this.userModel.find().exec();
-  }
+  async findAll(
+		searchPhase?: string,
+		page = 0,
+		limit = 10,
+		sortBy?: string,
+		sortOrder: 'asc' | 'desc' = 'asc',
+	): Promise<any> {
+		const query: FilterQuery<User> = {};
+
+		if (searchPhase) {
+			query.$or = [
+				{ firstName: { $regex: searchPhase, $options: 'i' } },
+				{ lastName: { $regex: searchPhase, $options: 'i' } },
+				{ email: { $regex: searchPhase, $options: 'i' } },
+				{ phoneNumber: { $regex: searchPhase, $options: 'i' } },
+				{
+					$expr: {
+						$regexMatch: {
+							input: { $concat: ['$firstName', ' ', '$lastName'] },
+							regex: searchPhase,
+							options: 'i',
+						},
+					},
+				},
+			];
+		}
+
+		const total = await this.userModel.countDocuments(query);
+
+		const users = await this.userModel
+			.find(query)
+			.sort({ [sortBy ?? 'created_at']: sortOrder === 'asc' ? 1 : -1 })
+			.skip(page * limit)
+			.limit(limit);
+
+		return {
+			total,
+			page,
+			limit,
+			users,
+		};
+	}
 
   async delete(id: string): Promise<UserDocument | null> {
     return this.userModel.findByIdAndDelete(id).exec();

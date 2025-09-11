@@ -11,6 +11,7 @@ import { BabiesModule } from './modules/babies/babies.module';
 import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
 
 
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -28,6 +29,7 @@ import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module
     UserModule,
     BabiesModule,
     DiaryEntriesModule,
+
 
   ],
   controllers: [AppController],

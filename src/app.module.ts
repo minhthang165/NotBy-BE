@@ -7,6 +7,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './modules/auth/auth.module';
 import { User } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { BabiesModule } from './modules/babies/babies.module';
+import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
 
 
 @Module({
@@ -24,6 +26,9 @@ import { UserModule } from './modules/user/user.module';
     }),
     AuthModule,
     UserModule,
+    BabiesModule,
+    DiaryEntriesModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

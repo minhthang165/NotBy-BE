@@ -17,7 +17,9 @@ export class DiaryEntriesService {
   }
 
   async findAll(): Promise<DiaryEntryDocument[]> {
-    return this.diaryEntryModel.find().exec();
+    return this.diaryEntryModel
+    .find()
+    .exec();
   }
 
   async findById(id: string): Promise<DiaryEntryDocument> {
@@ -36,7 +38,9 @@ export class DiaryEntriesService {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }
-    const updated = await this.diaryEntryModel.findByIdAndUpdate(id, updateDiaryEntryDto, { new: true }).exec();
+    const updated = await this.diaryEntryModel
+    .findByIdAndUpdate(id, updateDiaryEntryDto, { new: true })
+    .exec();
     if (!updated) {
       throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }
@@ -47,7 +51,9 @@ export class DiaryEntriesService {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }
-    const deleted = await this.diaryEntryModel.findByIdAndDelete(id).exec();
+    const deleted = await this.diaryEntryModel
+    .findByIdAndDelete(id)
+    .exec();
     if (!deleted) {
       throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }

@@ -20,7 +20,6 @@ export class AuthController {
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
-        return req.user;
+        return res.redirect('http://localhost:5010/login/api-docs');
     }
-
 }

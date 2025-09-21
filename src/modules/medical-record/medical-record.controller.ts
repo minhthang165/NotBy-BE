@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiQuery, ApiOperation } from '@nestjs/swagger'; // <-- 1. Thêm ApiQuery
+import { ApiTags, ApiQuery, ApiOperation } from '@nestjs/swagger'; 
 import { MedicalRecordsService } from './medical-record.service';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';

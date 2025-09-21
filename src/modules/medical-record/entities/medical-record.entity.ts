@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose'; // <-- Đã dọn dẹp import
+import { HydratedDocument, Types } from 'mongoose'; 
 import { BaseEntity } from 'src/modules/shared/base.entity';
 
 export type MedicalRecordDocument = HydratedDocument<MedicalRecord>;

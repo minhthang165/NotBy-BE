@@ -20,6 +20,18 @@ export class AuthController {
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
-        return res.redirect('http://localhost:5010/login/api-docs');
+        // Set JWT token in cookie
+        res.cookie('jwt', req.user.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false, // true in production, false otherwise
+            sameSite: 'lax', // or 'strict'
+            maxAge: 24 * 60 * 60 * 1000, // 1 day   
+        });
+
+        if (req.user.role == "Admin") {
+            return res.redirect('http://localhost:5010/api-docs');
+        } else {
+            return res.redirect('http://localhost:3000/dashboard');
+        }
     }
 }

@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { configSwagger } from './configs/api-docs.config';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { AuthGuard } from '@nestjs/passport';
 
 async function bootstrap() {
   const logger = new Logger(bootstrap.name);
@@ -13,6 +14,7 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalInterceptors(new ResponseInterceptor(reflector));
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters();
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

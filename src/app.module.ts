@@ -7,7 +7,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './modules/auth/auth.module';
 import { User } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
-
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
+import { RolesGuard } from './modules/auth/guards/roles.guard';
+import { Category } from './modules/category/entities/category.entity';
+import { CategoryModule } from './modules/category/category.module';
+import { ArticleModule } from './modules/article/article.module';
+import { Article } from './modules/article/entities/article.entity';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { MediaFilesModule } from './modules/mediafiles/mediafiles.module';
 
 @Module({
   imports: [
@@ -22,10 +30,21 @@ import { UserModule } from './modules/user/user.module';
       }),
       inject: [ConfigService],
     }),
+    CategoryModule,
     AuthModule,
     UserModule,
+    ArticleModule,
+    CloudinaryModule,
+    MediaFilesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService
+    // ,
+    // {
+    //   provide: 'APP_GUAFRD',
+    //   useClass: RolesGuard,
+    // }
+  ],
 })
 export class AppModule {}

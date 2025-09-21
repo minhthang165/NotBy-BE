@@ -12,6 +12,7 @@ import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module
 import { HealthStatusModule } from './modules/health-status/health-status.module';
 import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
 
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -31,7 +32,6 @@ import { MedicalRecordsModule } from './modules/medical-record/medical-record.mo
     DiaryEntriesModule,
     HealthStatusModule,
     MedicalRecordsModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],

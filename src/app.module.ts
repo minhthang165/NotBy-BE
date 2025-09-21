@@ -9,6 +9,7 @@ import { User } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { BabiesModule } from './modules/babies/babies.module';
 import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
+import { HealthStatusModule } from './modules/health-status/health-status.module';
 
 
 @Module({
@@ -28,6 +29,7 @@ import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module
     UserModule,
     BabiesModule,
     DiaryEntriesModule,
+    HealthStatusModule,
 
   ],
   controllers: [AppController],

@@ -1,7 +1,10 @@
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { Constructor } from './../../../../node_modules/ts-jest/node_modules/type-fest/source/basic.d';
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { NextFunction } from 'express';
+import { User } from 'src/modules/user/entities/user.entity';
+import { Category } from 'src/modules/category/entities/category.entity';
+import { MediaFiles } from 'src/modules/mediafiles/entities/mediafile.entity';
 
 export type ArticleDocument = HydratedDocument<Article>
 
@@ -16,16 +19,16 @@ export type ArticleDocument = HydratedDocument<Article>
     },
 })
 export class Article{
-    @Prop()
-    CategoryId: string;
+    @Prop({ type: Types.ObjectId, ref: () => Category })
+    Category: Category;
     @Prop()
     Title: string;
     @Prop()
     Content: string;
-    @Prop()
-    FileId: string;
-    @Prop()
-    Author: string;
+    @Prop({ type: Types.ObjectId, ref: () => MediaFiles })
+    File: MediaFiles;
+    @Prop({ type: Types.ObjectId, ref: () => User })
+    Author: User;
     @Prop()
     Likes: number;
     @Prop()

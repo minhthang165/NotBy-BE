@@ -3,6 +3,6 @@ import { CreateCategoryDto } from './create-category.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
-    @ApiProperty({ description: 'The title of the category' })
+    @ApiProperty({ description: 'String' })
     Title: string;
 }

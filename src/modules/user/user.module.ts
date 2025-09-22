@@ -6,7 +6,7 @@ import { User, UserSchemaFactory } from './entities/user.entity';
 
 @Module({
   imports: [
-    MongooseModule.forFeatureAsync([{
+    MongooseModule.forFeatureAsync([{ 
       name: User.name,
       useFactory: UserSchemaFactory,
         inject: [],

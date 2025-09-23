@@ -23,7 +23,7 @@ export class DiaryEntriesService {
     }
     const newEntry = new this.diaryEntryModel(createDiaryEntryDto);
     await newEntry.save();
-    return newEntry.populate('childId'); // Populate ngay sau khi tạo
+    return newEntry.populate('childId'); 
   }
 
   async findAll(): Promise<DiaryEntryDocument[]> {

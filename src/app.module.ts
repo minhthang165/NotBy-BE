@@ -5,17 +5,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './modules/auth/auth.module';
-import { User } from './modules/user/entities/user.entity';
 import { UserModule } from './modules/user/user.module';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
-import { RolesGuard } from './modules/auth/guards/roles.guard';
-import { Category } from './modules/category/entities/category.entity';
 import { CategoryModule } from './modules/category/category.module';
 import { ArticleModule } from './modules/article/article.module';
-import { Article } from './modules/article/entities/article.entity';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MediaFilesModule } from './modules/mediafiles/mediafiles.module';
+import { BabiesModule } from './modules/babies/babies.module';
+import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
+import { HealthStatusModule } from './modules/health-status/health-status.module';
+import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
+import { EventModule } from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -38,13 +37,15 @@ import { MediaFilesModule } from './modules/mediafiles/mediafiles.module';
     HealthStatusModule,
     MedicalRecordsModule,
     EventModule,
+    ArticleModule,
+    CloudinaryModule,
+    MediaFilesModule,
   ],
   controllers: [AppController],
   providers: [
-    AppService
-    // ,
+    AppService,
     // {
-    //   provide: 'APP_GUAFRD',
+    //   provide: 'APP_GUARD',
     //   useClass: RolesGuard,
     // }
   ],

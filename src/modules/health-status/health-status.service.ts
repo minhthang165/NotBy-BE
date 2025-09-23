@@ -19,6 +19,7 @@ export class HealthStatusService {
   async findAll(): Promise<HealthStatusDocument[]> {
     return this.healthStatusModel
     .find()
+    .populate('childId')
     .exec();
   }
 
@@ -28,6 +29,7 @@ export class HealthStatusService {
     }
     const status = await this.healthStatusModel
     .findById(id)
+    .populate('childId')
     .exec();
     if (!status) {
       throw new NotFoundException(`Health status with id "${id}" not found`);

@@ -1,25 +1,21 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsIn, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsIn } from 'class-validator';
 import { CheckpointType } from '../entities/health-status.entity';
-import { Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateHealthStatusDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  childId: Types.ObjectId;
+  @ApiProperty({ type: String })
+  @IsString()
+  childId: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsNumber()
   height: number;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsNumber()
   weight: number;
 
-  @ApiProperty( { enum: CheckpointType, example: CheckpointType.HOME })
-  @IsNotEmpty()
+  @ApiProperty({ enum: CheckpointType, example: CheckpointType.HOME })
   @IsString()
   @IsIn([
     CheckpointType.HOME,
@@ -30,12 +26,9 @@ export class CreateHealthStatusDto {
   checkedAt: CheckpointType;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
   description?: string;
 
-  @IsOptional()
-  @IsUUID()
-  imageId?: Types.ObjectId;
-  // Chưa có image service nên tạm để thế này đã
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
+  image?: any;
 }

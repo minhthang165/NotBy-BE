@@ -46,7 +46,13 @@ export class DiaryEntriesService {
     return newEntry.populate('childId');
   }
 
-  async findAll(childId?: string): Promise<DiaryEntryDocument[]> {
+  async findAll( // Corrected method name
+    childId?: string,
+    page = 0,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+  ): Promise<{ data: DiaryEntryDocument[]; total: number; page: number; limit: number }> {
     const query: FilterQuery<DiaryEntryDocument> = {};
     if (childId) {
       if (!Types.ObjectId.isValid(childId)) {
@@ -54,7 +60,22 @@ export class DiaryEntriesService {
       }
       query.childId = new Types.ObjectId(childId);
     }
-    return this.diaryEntryModel.find(query).populate('childId').exec();
+
+    const total = await this.diaryEntryModel.countDocuments(query);
+    const data = await this.diaryEntryModel
+      .find(query)
+      .populate('childId')
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+      .skip(page * limit)
+      .limit(limit)
+      .exec();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findById(id: string): Promise<DiaryEntryDocument> {
@@ -74,14 +95,20 @@ export class DiaryEntriesService {
     file?: Express.Multer.File,
   ): Promise<DiaryEntryDocument> {
     if (!Types.ObjectId.isValid(id)) {
-      throw new BadRequestException('Invalid diary entry ID');
+      throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }
 
     const updatePayload: any = { ...updateDiaryEntryDto };
 
     if (file) {
-      // SỬA LẠI: Gán trực tiếp kết quả trả về
       updatePayload.imageUrl = await this.cloudinaryService.uploadImage(file);
+    }
+    
+    if (updatePayload.height !== undefined) {
+      updatePayload.height = Number(updatePayload.height);
+    }
+    if (updatePayload.weight !== undefined) {
+      updatePayload.weight = Number(updatePayload.weight);
     }
 
     const updated = await this.diaryEntryModel

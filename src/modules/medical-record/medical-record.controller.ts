@@ -30,8 +30,25 @@ export class MedicalRecordsController {
     required: false,
     type: String,
   })
-  findAll(@Query('childId') childId?: string) {
-    return this.medicalRecordsService.findAll(childId);
+  
+  @Get()
+  @ApiOperation({ summary: 'Lấy danh sách health status (có thể lọc theo bé, phân trang)' })
+  @ApiQuery({ name: 'childId', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortBy', required: false, type: String })
+  @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
+  async findAll(
+    @Query('childId') childId?: string,
+    @Query('page') page: string | number = 0,
+    @Query('limit') limit: string | number = 10,
+    @Query('sortBy') sortBy = 'createdAt',
+    @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'desc',
+  ) {
+    const pageNum = parseInt(page as string, 10) || 0;
+    const limitNum = parseInt(limit as string, 10) || 10;
+    
+    return this.medicalRecordsService.findAll(childId, pageNum, limitNum, sortBy, sortOrder);
   }
 
   @Get(':id')

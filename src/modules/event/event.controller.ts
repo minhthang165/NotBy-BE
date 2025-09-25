@@ -26,11 +26,23 @@ export class EventController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách sự kiện (có thể lọc theo bé)' })
   @ApiQuery({ name: 'childId', required: false, type: String })
-  async findAll(@Query('childId') childId?: string) {
-    return this.eventService.findAll(childId);
-  }
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortBy', required: false, type: String })
+	@ApiQuery({ name: 'sortOrder', required: false, type: String })
+  async findAll(
+  @Query('childId') childId?: string,
+  @Query('page') page = 0,
+  @Query('limit') limit = 10,
+  @Query('sortBy') sortBy = 'createdAt',
+  @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'desc',
+) {
+  const pageNum = Number(page) || 0;
+  const limitNum = Number(limit) || 10;
+  return this.eventService.findAll(childId, pageNum, limitNum, sortBy, sortOrder);
+}
+
 
   @Get(':id')
   async findOne(@Param('id') id: string) {

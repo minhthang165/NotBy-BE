@@ -24,7 +24,6 @@ export class DiaryEntriesController {
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ summary: 'Tạo một bài nhật ký mới (có thể kèm ảnh)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateDiaryEntryDto }) 
   create(
@@ -34,12 +33,35 @@ export class DiaryEntriesController {
     return this.diaryEntriesService.create(createDiaryEntryDto, image);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Lấy danh sách nhật ký (có thể lọc theo bé)' })
-  @ApiQuery({ name: 'childId', required: false, type: String })
-  findAll(@Query('childId') childId?: string) {
-    return this.diaryEntriesService.findAll(childId);
-  }
+@Patch(':id')
+@ApiConsumes('multipart/form-data')
+@UseInterceptors(FileInterceptor('image'))
+update(
+  @Param('id') id: string,
+  @Body() updateDiaryEntryDto: UpdateDiaryEntryDto,
+  @UploadedFile() image?: Express.Multer.File, 
+) {
+  return this.diaryEntriesService.update(id, updateDiaryEntryDto, image);
+}
+
+    @Get()
+    @ApiQuery({ name: 'childId', required: false, type: String })
+    @ApiQuery({ name: 'page', required: false, type: Number })
+    @ApiQuery({ name: 'limit', required: false, type: Number })
+    @ApiQuery({ name: 'sortBy', required: false, type: String })
+	@ApiQuery({ name: 'sortOrder', required: false, type: String })
+    async findAll(
+  @Query('childId') childId?: string,
+  @Query('page') page = 0,
+  @Query('limit') limit = 10,
+  @Query('sortBy') sortBy = 'createdAt',
+  @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'desc',
+) {
+  const pageNum = Number(page) || 0;
+  const limitNum = Number(limit) || 10;
+  return this.diaryEntriesService.findAll(childId, pageNum, limitNum, sortBy, sortOrder);
+}
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Tìm một bài nhật ký bằng ID' })
@@ -47,18 +69,6 @@ export class DiaryEntriesController {
     return this.diaryEntriesService.findById(id);
   }
 
-  @Patch(':id')
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiOperation({ summary: 'Cập nhật một bài nhật ký (có thể kèm ảnh mới)' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: UpdateDiaryEntryDto })
-  update(
-    @Param('id') id: string,
-    @Body() updateDiaryEntryDto: UpdateDiaryEntryDto,
-    @UploadedFile() image?: Express.Multer.File,
-  ) {
-    return this.diaryEntriesService.update(id, updateDiaryEntryDto, image);
-  }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Xóa một bài nhật ký' })

@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { Event, EventDocument } from './entities/event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { Baby, BabyDocument } from '../babies/entities/baby.entity';
-
+import { Query } from '@nestjs/common';
 
 @Injectable()
 export class EventService {
@@ -32,15 +32,35 @@ export class EventService {
 
 
   
-  async findAll(childId?: string): Promise<EventDocument[]> {
-    const query: any = { isActive: { $ne: false } };
+  async findAll(
+    childId?: string,
+    page = 0,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+  ): Promise<{ data: EventDocument[]; total: number; page: number; limit: number }> {
+    const query: FilterQuery<EventDocument> = { isActive: { $ne: false } };
     if (childId) {
       if (!Types.ObjectId.isValid(childId)) {
         throw new NotFoundException('Invalid childId');
       }
       query.childId = childId;
     }
-    return this.eventModel.find(query).populate('childId').populate('createdBy').exec();
+    const total = await this.eventModel.countDocuments(query);
+    const data = await this.eventModel
+      .find(query)
+      .populate('childId')
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+      .skip(page * limit)
+      .limit(limit)
+      .exec();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findById(id: string): Promise<EventDocument> {

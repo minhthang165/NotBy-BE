@@ -1,26 +1,71 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { HealthStatus, HealthStatusDocument } from './entities/health-status.entity';
 import { CreateHealthStatusDto } from './dto/create-health-status.dto';
 import { UpdateHealthStatusDto } from './dto/update-health-status.dto';
+import { Baby, BabyDocument } from '../babies/entities/baby.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class HealthStatusService {
   constructor(
     @InjectModel(HealthStatus.name) private readonly healthStatusModel: Model<HealthStatusDocument>,
+    @InjectModel(Baby.name) private readonly babyModel: Model<BabyDocument>,
+        private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(createHealthStatusDto: CreateHealthStatusDto): Promise<HealthStatusDocument> {
-    const newStatus = new this.healthStatusModel(createHealthStatusDto);
-    return newStatus.save();
+   async create(
+    createHealthStatusDto: CreateHealthStatusDto,
+    file?: Express.Multer.File,
+  ): Promise<HealthStatusDocument> {
+    const { childId } = createHealthStatusDto;
+
+    const baby = await this.babyModel.findById(childId);
+    if (!baby) {
+      throw new NotFoundException(`Baby with ID "${childId}" not found`);
+    }
+     let imageUrl: string | undefined;
+    if (file) {
+      imageUrl = await this.cloudinaryService.uploadImage(file);
+    }
+    const newStatus = new this.healthStatusModel({
+      ...createHealthStatusDto,
+      imageUrl,
+    });
+    await newStatus.save();
+    return newStatus.populate('childId');
   }
 
-  async findAll(): Promise<HealthStatusDocument[]> {
-    return this.healthStatusModel
-    .find()
-    .populate('childId')
-    .exec();
+ async findAll(
+    childId?: string,
+    page = 0,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+  ): Promise<{ data: HealthStatusDocument[]; total: number; page: number; limit: number }> {
+    const query: FilterQuery<HealthStatusDocument> = {};
+    if (childId) {
+      if (!Types.ObjectId.isValid(childId)) {
+        throw new BadRequestException('Invalid childId');
+      }
+      query.childId = childId;
+    }
+    const total = await this.healthStatusModel.countDocuments(query);
+    const data = await this.healthStatusModel
+      .find(query)
+      .populate('childId')
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+      .skip(page * limit)
+      .limit(limit)
+      .exec();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findById(id: string): Promise<HealthStatusDocument> {
@@ -37,13 +82,28 @@ export class HealthStatusService {
     return status;
   }
 
-  async update(id: string, updateHealthStatusDto: UpdateHealthStatusDto): Promise<HealthStatusDocument> {
+    async update(
+    id: string,
+    updateHealthStatusDto: UpdateHealthStatusDto,
+    file?: Express.Multer.File,
+  ): Promise<HealthStatusDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Health status with id "${id}" not found`);
     }
+
+    let imageUrl: string | undefined;
+    if (file) {
+      imageUrl = await this.cloudinaryService.uploadImage(file);
+    }
+
+    const updatePayload = {
+      ...updateHealthStatusDto,
+      ...(imageUrl && { imageUrl }),
+    };
+
     const updated = await this.healthStatusModel
-    .findByIdAndUpdate(id, updateHealthStatusDto, { new: true })
-    .exec();
+      .findByIdAndUpdate(id, updatePayload, { new: true })
+      .exec();
     if (!updated) {
       throw new NotFoundException(`Health status with id "${id}" not found`);
     }

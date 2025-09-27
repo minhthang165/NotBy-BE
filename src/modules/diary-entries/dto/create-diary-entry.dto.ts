@@ -4,6 +4,7 @@ import { DiaryType, DiaryCategory } from '../entities/diary-entry.entity';
 
 export class CreateDiaryEntryDto {
   @ApiProperty({ example: '60f7c2b8e1b1c8a1b8e1b1c8', description: 'ID của baby' })
+
   @IsMongoId()
   @IsNotEmpty()
   childId: string;

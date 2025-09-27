@@ -14,6 +14,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 @Injectable()
 export class DiaryEntriesService {
   constructor(
+ 
     @InjectModel(DiaryEntry.name)
     private readonly diaryEntryModel: Model<DiaryEntryDocument>,
     @InjectModel(Baby.name)
@@ -115,7 +116,6 @@ export class DiaryEntriesService {
       .findByIdAndUpdate(id, updatePayload, { new: true })
       .populate('childId')
       .exec();
-
     if (!updated) {
       throw new NotFoundException(`Diary entry with id "${id}" not found`);
     }

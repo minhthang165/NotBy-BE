@@ -61,6 +61,9 @@ export class DiaryEntry extends BaseEntity {
     required: true,
   })
   childId: mongoose.Types.ObjectId;
+
+  @Prop({ type: [String] })
+  imageUrls?: string[];
 }
 
 export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry);

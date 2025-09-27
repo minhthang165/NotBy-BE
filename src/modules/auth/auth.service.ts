@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { Connection } from 'mongoose';
 import { InjectConnection } from '@nestjs/mongoose';

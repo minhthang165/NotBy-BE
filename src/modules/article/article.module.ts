@@ -28,6 +28,6 @@ import { MediaFiles, MediaFilesSchema } from '../mediafiles/entities/mediafile.e
   ],
   controllers: [ArticleController],
   providers: [ArticleService],
-  exports: [ArticleService],
+  exports: [ArticleService, MongooseModule],
 })
 export class ArticleModule {}

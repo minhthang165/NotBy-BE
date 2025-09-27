@@ -15,6 +15,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
   ],
   controllers: [DiaryEntriesController],
   providers: [DiaryEntriesService],
-  exports: [DiaryEntriesService],
+  exports: [DiaryEntriesService, MongooseModule],
 })
 export class DiaryEntriesModule {}

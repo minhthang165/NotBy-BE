@@ -16,7 +16,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   controllers: [EventController],
   providers: [EventService],
-  exports: [EventService],
+  exports: [EventService, MongooseModule],
 })
 export class EventModule {}
 

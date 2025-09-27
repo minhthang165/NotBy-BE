@@ -16,6 +16,7 @@ import { HealthStatusModule } from './modules/health-status/health-status.module
 import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
 import { EventModule } from './modules/event/event.module';
 
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),

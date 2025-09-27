@@ -31,9 +31,12 @@ export class ArticleService {
       throw new NotFoundException(`Author with id ${Author} not found`);
     }
 
-    const file = await this.mediaFilesModel.findById(FileId);
+    let file = null;
+    if (FileId) {
+      file = await this.mediaFilesModel.findById(FileId); 
     if (!file) {
       throw new NotFoundException(`Media file with id ${FileId} not found`);
+      }
     }
 
     const newArticle = new this.articleModel({
@@ -59,12 +62,31 @@ export class ArticleService {
   }
 
   async update(id: string, updateArticleDto: UpdateArticleDto): Promise<ArticleDocument | null> {
-    return this.articleModel
-      .findByIdAndUpdate(id, updateArticleDto, { new: true })
-      .populate('Category')
-      .populate('Author')
-      .populate('File')
-      .exec();
+    const article = await this.articleModel.findById(id);
+    if (!article) {
+      throw new NotFoundException(`Article with id ${id} not found`);
+    }
+    
+    if (updateArticleDto.CategoryId) {
+      const category = await this.categoryModel.findById(updateArticleDto.CategoryId);
+      if (!category) {
+        throw new NotFoundException(`Category with id ${updateArticleDto.CategoryId} not found`);
+      }
+      article.Category = category;
+    }
+    
+    if (updateArticleDto.FileId) {
+      const file = await this.mediaFilesModel.findById(updateArticleDto.FileId);
+      if (!file) {
+        throw new NotFoundException(`Media file with id ${updateArticleDto.FileId} not found`);
+      }
+      article.File = file;
+    }
+    
+    if (updateArticleDto.Title) article.Title = updateArticleDto.Title;
+    if (updateArticleDto.Content) article.Content = updateArticleDto.Content;
+    
+    return article.save();
   }
 
   async findAll(): Promise<ArticleDocument[]> {

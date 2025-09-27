@@ -17,7 +17,6 @@ export class MedicalRecordsService {
 
   async create(createDto: CreateMedicalRecordDto): Promise<MedicalRecordDocument> {
     const { childId } = createDto;
-
     const baby = await this.babyModel.findById(childId);
     if (!baby) {
       throw new NotFoundException(`Baby with ID "${childId}" not found`);
@@ -29,7 +28,13 @@ export class MedicalRecordsService {
 
   }
 
-  async findAll(childId?: string): Promise<MedicalRecordDocument[]> {
+async findAll(
+    childId?: string,
+    page = 0,
+    limit = 10,
+    sortBy = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+  ): Promise<{ data: MedicalRecordDocument[]; total: number; page: number; limit: number }> {
     const query: FilterQuery<MedicalRecordDocument> = {};
     if (childId) {
       if (!Types.ObjectId.isValid(childId)) {
@@ -37,9 +42,23 @@ export class MedicalRecordsService {
       }
       query.childId = new Types.ObjectId(childId);
     }
-    return this.medicalRecordModel.find(query).populate('childId').exec(); 
-  }
+    
+    const total = await this.medicalRecordModel.countDocuments(query);
+    const data = await this.medicalRecordModel
+      .find(query)
+      .populate('childId')
+      .sort({ [sortBy]: sortOrder === 'asc' ? 1 : -1 })
+      .skip(page * limit)
+      .limit(limit)
+      .exec();
 
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
   async findById(id: string): Promise<MedicalRecordDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid ID format');

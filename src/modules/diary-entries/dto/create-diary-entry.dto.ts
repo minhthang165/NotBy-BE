@@ -25,4 +25,7 @@ export class CreateDiaryEntryDto {
   @ApiProperty({ enum: DiaryCategory, example: DiaryCategory.VAN_DONG })
   @IsEnum(DiaryCategory)
   category: DiaryCategory;
+
+  @ApiProperty({ type: 'string', format: 'binary', required: false })
+  image?: any;
 }

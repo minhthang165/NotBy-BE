@@ -36,7 +36,6 @@ export class HealthStatus extends BaseEntity {
     this.weight = status?.weight;
     this.checkedAt = status?.checkedAt;
     this.description = status?.description;
-    this.imageId = status?.imageId;
   }
 
   @Prop({
@@ -59,9 +58,8 @@ export class HealthStatus extends BaseEntity {
   description?: string;
 
 
-  //Chua co tạo quan he voi image service nen chua biet liên kết gi
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
-  imageId?: mongoose.Types.ObjectId;
+ @Prop({ type: [String] })
+  imageUrls?: string[];
 }
 
 export const HealthStatusSchema = SchemaFactory.createForClass(HealthStatus);

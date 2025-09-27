@@ -29,9 +29,9 @@ export class AuthController {
         });
 
         if (req.user.role == "Admin") {
-            return res.redirect('http://localhost:5010/api-docs');
+            return res.redirect('https://www.notby.id.vn/api-docs');
         } else {
-            return res.redirect('http://localhost:3000/dashboard');
+            return res.redirect('https://www.notby.id.vn/dashboard');
         }
     }
-}
+    }

@@ -6,17 +6,23 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './modules/auth/strategies/jwt.strategy';
+import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { CategoryModule } from './modules/category/category.module';
 import { ArticleModule } from './modules/article/article.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { MediaFilesModule } from './modules/mediafiles/mediafiles.module';
+import { ForumPostModule } from './modules/forumpost/forumpost.module';
+import { ForumCommentModule } from './modules/forumcomment/forumcomment.module';
+import { GroupMemberModule } from './modules/groupMember/groupMember.module';
+import { GroupModule } from './modules/group/group.module';
 import { BabiesModule } from './modules/babies/babies.module';
 import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
 import { HealthStatusModule } from './modules/health-status/health-status.module';
 import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
 import { EventModule } from './modules/event/event.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-
 
 @Module({
   imports: [
@@ -42,6 +48,10 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ArticleModule,
     CloudinaryModule,
     MediaFilesModule,
+    ForumPostModule,
+    ForumCommentModule,
+    GroupModule,
+    GroupMemberModule,
     DashboardModule,
   ],
   controllers: [AppController],

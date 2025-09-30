@@ -23,7 +23,6 @@ export class AuthController {
         // Set JWT token in cookie
         res.cookie('jwt', req.user.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production' ? true : false, // true in production, false otherwise
             sameSite: 'lax', // or 'strict'
             maxAge: 24 * 60 * 60 * 1000, // 1 day   
         });
@@ -34,4 +33,4 @@ export class AuthController {
             return res.redirect('https://www.notby.id.vn/dashboard');
         }
     }
-    }
+}

@@ -21,7 +21,7 @@ export class AuthController {
     @UseGuards(AuthGuard('google'))
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
         // Set JWT token in cookie
-        res.cookie('jwt', req.user.token, {
+        res.cookie('jwtToken', req.user.token, {
             httpOnly: true,
             sameSite: 'lax', // or 'strict'
             maxAge: 24 * 60 * 60 * 1000, // 1 day   

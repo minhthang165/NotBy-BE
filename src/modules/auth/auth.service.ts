@@ -15,17 +15,30 @@ export class AuthService {
   ) {}
 
   async validateOAuthLogin(profile: any): Promise<any> {
-    const { id, displayName, emails, photos } = profile;
+    console.log('Google profile:', JSON.stringify(profile, null, 2)); // For debugging
+    
+    const { id, displayName, name, emails, photos } = profile;
     let user = await this.userService.findByGoogleId(id);
 
     if (!user) {
-      user = await this.userService.create({
+      const firstName = name?.givenName || displayName?.split(' ')?.[0] || '';
+      const lastName = name?.familyName || displayName?.split(' ')?.[1] || '';
+      
+      const userData: any = {
         googleId: id,
-        email: emails[0].value,
-        name: displayName,
-        photo: photos[0].value,
-        role: 'User', 
-      });
+        email: emails?.[0]?.value || '',
+        firstName: firstName,
+        lastName: lastName,
+        gender: "Unspecified", // Default value since Google doesn't provide gender
+        photo: photos?.[0]?.value || '',
+        phoneNumber: null,
+        role: 'Parent', 
+      };
+      
+      // Omitting phoneNumber and dob entirely since Google doesn't provide them
+      // This prevents the MongoDB duplicate key error for phoneNumber
+      
+      user = await this.userService.create(userData);
     }
 
     const payload = { sub: user._id, email: user.email, role: user.role };

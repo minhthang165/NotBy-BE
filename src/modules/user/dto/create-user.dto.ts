@@ -9,12 +9,32 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     @ApiProperty({ description: 'String' })
-    name: string;
+    firstName: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: 'String' })
+    lastName: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: 'String' })
+    dob: Date;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: 'String' })
+    phoneNumber: string;
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty({ description: 'String' })
     googleId: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: 'String' })
+    gender: string;
 
     @IsNotEmpty()
     @IsString()

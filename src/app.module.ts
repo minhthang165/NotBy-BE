@@ -17,6 +17,13 @@ import { ForumPostModule } from './modules/forumpost/forumpost.module';
 import { ForumCommentModule } from './modules/forumcomment/forumcomment.module';
 import { GroupMemberModule } from './modules/groupMember/groupMember.module';
 import { GroupModule } from './modules/group/group.module';
+import { BabiesModule } from './modules/babies/babies.module';
+import { DiaryEntriesModule } from './modules/diary-entries/diary-entries.module';
+import { HealthStatusModule } from './modules/health-status/health-status.module';
+import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
+import { EventModule } from './modules/event/event.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -33,6 +40,11 @@ import { GroupModule } from './modules/group/group.module';
     CategoryModule,
     AuthModule,
     UserModule,
+    BabiesModule,
+    DiaryEntriesModule,
+    HealthStatusModule,
+    MedicalRecordsModule,
+    EventModule,
     ArticleModule,
     CloudinaryModule,
     MediaFilesModule,
@@ -40,13 +52,13 @@ import { GroupModule } from './modules/group/group.module';
     ForumCommentModule,
     GroupModule,
     GroupMemberModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
-    AppService
-    // ,
+    AppService,
     // {
-    //   provide: 'APP_GUAFRD',
+    //   provide: 'APP_GUARD',
     //   useClass: RolesGuard,
     // }
   ],

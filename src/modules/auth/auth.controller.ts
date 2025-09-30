@@ -22,7 +22,7 @@ export class AuthController {
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
         // Set JWT token in cookie
         res.cookie('jwtToken', req.user.token, {
-            httpOnly: true,
+            httpOnly: false,
             sameSite: 'lax', // or 'strict'
             maxAge: 24 * 60 * 60 * 1000, // 1 day   
         });

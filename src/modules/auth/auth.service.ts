@@ -34,7 +34,6 @@ export class AuthService {
         role: 'Parent', 
       };
       
-      
       user = await this.userService.create(userData);
     }
 

@@ -21,20 +21,12 @@ async function bootstrap() {
   // Trust proxy headers - critical for cookies in production with secure flag
   app.set('trust proxy', 1);
   app.enableCors({
-    origin: [
-      'https://www.notby.id.vn',
-      'https://notby.id.vn', 
-      'https://notby-be-8q9y.onrender.com',
-      // Include development origins for testing
-      'http://localhost:3000',
-      'http://localhost:3001'
-    ],
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization,Accept,Origin,X-Requested-With,x-access-token',
     exposedHeaders: ['Set-Cookie', 'Authorization', 'x-access-token'],
-    credentials: true, // Very important for cookies
+    credentials: true,
   });
-  
   configSwagger(app);
  
   app.useStaticAssets(join(__dirname, './served'));

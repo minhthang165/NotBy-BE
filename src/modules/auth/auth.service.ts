@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { first } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +16,6 @@ export class AuthService {
   ) {}
 
   async validateOAuthLogin(profile: any): Promise<any> {
-    console.log('Google profile:', JSON.stringify(profile, null, 2)); // For debugging
-    
     const { id, displayName, name, emails, photos } = profile;
     let user = await this.userService.findByGoogleId(id);
 
@@ -35,13 +34,10 @@ export class AuthService {
         role: 'Parent', 
       };
       
-      // Omitting phoneNumber and dob entirely since Google doesn't provide them
-      // This prevents the MongoDB duplicate key error for phoneNumber
-      
       user = await this.userService.create(userData);
     }
 
-    const payload = { sub: user._id, email: user.email, role: user.role };
+    const payload = { sub: user._id, email: user.email, role: user.role, firstName: user.firstName, lastName: user.lastName, phoneNumber: user.phoneNumber, dob: user.dob };
     const token = this.jwtService.sign(payload);
 
     return { token, user };

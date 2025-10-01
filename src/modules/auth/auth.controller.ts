@@ -22,15 +22,23 @@ export class AuthController {
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
         // Set JWT token in cookie
         res.cookie('jwtToken', req.user.token, {
-            httpOnly: true,
+            httpOnly: false,
             sameSite: 'lax', // or 'strict'
             maxAge: 24 * 60 * 60 * 1000, // 1 day   
         });
 
+        // For Deploy
         if (req.user.role == "Admin") {
-            return res.redirect('https://www.notby.id.vn/api-docs');
+            return res.redirect('https://notby-be-8q9y.onrender.com/api-docs');
         } else {
             return res.redirect('https://www.notby.id.vn/dashboard');
         }
+
+        // //For Localhost Testing
+        // if (req.user.role == "Admin") {
+        //     return res.redirect('http://localhost:3000/dashboard');
+        // } else {
+        //     return res.redirect('http://localhost:3000/dashboard');
+        // }
     }
 }

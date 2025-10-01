@@ -16,9 +16,18 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters();
   app.enableCors({
-    origin: '*',
+    origin: [
+      'https://www.notby.id.vn',
+      'https://notby.id.vn', 
+      'https://notby-be-8q9y.onrender.com',
+      // Include development origins for testing
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: '*',
+    allowedHeaders: 'Content-Type,Authorization,Accept',
+    exposedHeaders: ['Set-Cookie'],
+    credentials: true, // Very important for cookies
   });
   configSwagger(app);
  

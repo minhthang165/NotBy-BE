@@ -22,9 +22,12 @@ export class AuthController {
     async googleAuthRedirect(@Req() req, @Res() res: Response) {
         // Set JWT token in cookie
         res.cookie('jwtToken', req.user.token, {
-            httpOnly: false,
-            sameSite: 'lax', // or 'strict'
-            maxAge: 24 * 60 * 60 * 1000, // 1 day   
+            httpOnly: false, // Set to false so JavaScript can access it
+            secure: true, // Required for HTTPS sites
+            sameSite: 'none', // Required for cross-domain cookies
+            domain: '.notby.id.vn', // Set to your domain (with leading dot for subdomains)
+            path: '/', // Make available across all paths
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
         // For Deploy
@@ -41,4 +44,4 @@ export class AuthController {
         //     return res.redirect('http://localhost:3000/dashboard');
         // }
     }
-    }
+}

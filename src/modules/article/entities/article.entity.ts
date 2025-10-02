@@ -33,6 +33,12 @@ export class Article{
     Likes: number;
     @Prop()
     Views: number;
+    @Prop()
+    Tags : string[];
+    @Prop()
+    ReadTime: number;
+    @Prop()
+    Description: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

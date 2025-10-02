@@ -18,7 +18,7 @@ export class ArticleService {
   ) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
-    const { CategoryId, Author, Title, Content, FileId, Likes, Views } =
+    const { CategoryId, Author, Title, Content, FileId, Likes, Views, Tags, ReadTime, Description } =
       createArticleDto;
 
     const category = await this.categoryModel.findById(CategoryId);
@@ -47,6 +47,9 @@ export class ArticleService {
       File: file,
       Likes: Likes ?? 0,
       Views: Views ?? 0,
+      Tags: Tags ?? [],
+      ReadTime: ReadTime ?? 0,
+      Description: Description ?? '',
     });
 
     return newArticle.save();
@@ -82,9 +85,22 @@ export class ArticleService {
       }
       article.File = file;
     }
+
+    if (updateArticleDto.Author) {
+      const author = await this.userModel.findById(updateArticleDto.Author);
+      if (!author) {
+        throw new NotFoundException(`Author with id ${updateArticleDto.Author} not found`);
+      }
+      article.Author = author;
+    }
     
     if (updateArticleDto.Title) article.Title = updateArticleDto.Title;
     if (updateArticleDto.Content) article.Content = updateArticleDto.Content;
+    if (updateArticleDto.Likes !== undefined) article.Likes = updateArticleDto.Likes;
+    if (updateArticleDto.Views !== undefined) article.Views = updateArticleDto.Views;
+    if (updateArticleDto.Tags) article.Tags = updateArticleDto.Tags;
+    if (updateArticleDto.ReadTime !== undefined) article.ReadTime = updateArticleDto.ReadTime;
+    if (updateArticleDto.Description) article.Description = updateArticleDto.Description;
     
     return article.save();
   }

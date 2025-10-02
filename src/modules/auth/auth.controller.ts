@@ -51,7 +51,7 @@ export class AuthController {
             return res.redirect(`https://www.notby.id.vn/dashboard?token=${encodedToken}`);
         }
 
-        // //For Localhost Testing
+        //For Localhost Testing
         // if (req.user.role == "Admin") {
         //     return res.redirect(`http://localhost:3000/dashboard?token=${encodedToken}`);
         // } else {

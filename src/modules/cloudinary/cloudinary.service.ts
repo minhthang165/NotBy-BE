@@ -78,6 +78,7 @@ export class CloudinaryService {
             type: 'upload',
             prefix: 'Image/',
             max_results: 100,
+            media_metadata: true,
         });
     }
     
@@ -87,6 +88,7 @@ export class CloudinaryService {
             type: 'upload',
             prefix: 'Video/',
             max_results: 100,
+            media_metadata: true,
         });
     }
 
@@ -96,6 +98,7 @@ export class CloudinaryService {
             type: 'upload',
             prefix: 'File/',
             max_results: 100,
+            media_metadata: true,
         });
     }
 }

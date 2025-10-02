@@ -33,4 +33,17 @@ export class CreateArticleDto {
     @IsNumber()
     @ApiProperty({ description: 'Number of views' })
     Views: number;
+
+    @IsNotEmpty()
+    @IsString({ each: true })
+    @ApiProperty({ description: 'Tags', type: [String] })
+    Tags : string[];
+
+    @IsNumber()
+    @ApiProperty({ description: 'Estimated read time in minutes' })
+    ReadTime: number;
+    
+    @IsString()
+    @ApiProperty({ description: 'Description', required: false })
+    Description: string;
 }

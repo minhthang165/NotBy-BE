@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNull } from 'typeorm';
 
 export class CreateForumpostDto {
     @IsNotEmpty()
@@ -12,9 +13,10 @@ export class CreateForumpostDto {
     @ApiProperty({ description: 'Content' })
     Content: string;
 
+    @IsOptional()
     @IsString()
-    @ApiProperty({ description: 'File Id', required: false })
-    FileId: string;
+    @ApiProperty({ description: 'File Id', required: false, nullable: true })
+    FileId?: string;
 
     @IsNotEmpty()
     @IsString()

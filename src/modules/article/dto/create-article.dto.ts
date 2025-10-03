@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateArticleDto {
@@ -17,9 +17,10 @@ export class CreateArticleDto {
     @ApiProperty({ description: 'Content' })
     Content: string;
 
+    @IsOptional()
     @IsString()
-    @ApiProperty({ description: 'File Id', required: false })
-    FileId: string;
+    @ApiProperty({ description: 'File Id', required: false, nullable: true })
+    FileId?: string;
 
     @IsNotEmpty()
     @IsString()
@@ -40,10 +41,11 @@ export class CreateArticleDto {
     Tags : string[];
 
     @IsNumber()
-    @ApiProperty({ description: 'Estimated read time in minutes' })
+    @ApiProperty({ description: 'Number of minutes' })
     ReadTime: number;
     
+    @IsOptional()
     @IsString()
     @ApiProperty({ description: 'Description', required: false })
-    Description: string;
+    Description?: string;
 }

@@ -55,20 +55,29 @@ export class CloudinaryService {
 
     async uploadFile(file: Express.Multer.File): Promise<string> {
         return new Promise((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream({
-                resource_type: 'raw',
+            // Create upload options
+            const uploadOptions: any = {
+                resource_type: 'auto',
                 folder: 'File',
-            }, (error, result) => {
-                if (error) {
-                    return reject(error);
+                use_filename: true,
+            };
+            
+            
+            const uploadStream = cloudinary.uploader.upload_stream(
+                uploadOptions,
+                (error, result) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    if (result && result.secure_url) {
+                        resolve(result.secure_url);
+                    } else {
+                        reject(new Error("Upload failed: No result or secure_url returned."));
+                    }
                 }
-                if (result && result.secure_url) {
-                    resolve(result.secure_url);
-                } else {
-                    reject(new Error("Upload failed: No result or secure_url returned."));
-                }
-            });
-            const stream = streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            );
+            
+            streamifier.createReadStream(file.buffer).pipe(uploadStream);
         });
     }
 
@@ -94,7 +103,6 @@ export class CloudinaryService {
 
     getAllFiles() {
         return cloudinary.api.resources({
-            resource_type: 'raw',
             type: 'upload',
             prefix: 'File/',
             max_results: 100,

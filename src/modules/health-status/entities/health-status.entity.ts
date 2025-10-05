@@ -1,6 +1,7 @@
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseEntity } from 'src/modules/shared/base.entity';
+import { Type } from 'class-transformer';
 
 export type HealthStatusDocument = HydratedDocument<HealthStatus>;
 
@@ -46,9 +47,11 @@ export class HealthStatus extends BaseEntity {
   childId: mongoose.Types.ObjectId;
 
   @Prop({ type: Number, required: true })
+  @Type(() => Number)
   height: number;
 
   @Prop({ type: Number, required: true })
+  @Type(() => Number)
   weight: number;
 
   @Prop({ type: String, enum: CheckpointType, required: true })

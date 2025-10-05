@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose'; 
+import { HydratedDocument, Types } from 'mongoose';
 import { BaseEntity } from 'src/modules/shared/base.entity';
 
 export type MedicalRecordDocument = HydratedDocument<MedicalRecord>;
@@ -11,17 +11,10 @@ export enum RecordType {
 
 @Schema({
   timestamps: true,
-  toJSON: {
-    getters: true,
-    virtuals: true,
-  },
+  toJSON: { virtuals: true },
 })
 export class MedicalRecord extends BaseEntity {
-  @Prop({
-    type: Types.ObjectId, // <-- Dùng `Types` cho nhất quán
-    ref: 'Baby',
-    required: true,
-  })
+  @Prop({ type: Types.ObjectId, ref: 'Baby', required: true })
   childId: Types.ObjectId;
 
   @Prop({ type: String, enum: RecordType, required: true })
@@ -33,10 +26,10 @@ export class MedicalRecord extends BaseEntity {
   @Prop({ type: Date, required: true })
   recordDate: Date;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   location?: string;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   notes?: string;
 }
 

@@ -68,7 +68,7 @@ export class EventService {
       throw new NotFoundException('Invalid event id');
     }
     const event = await this.eventModel.findById(id).populate('childId').populate('createdBy').exec();
-    if (!event || event.isActive === false) throw new NotFoundException('Event not found');
+    if (!event) throw new NotFoundException('Event not found');
     return event;
   }
 
@@ -81,16 +81,18 @@ export class EventService {
       .populate('childId')
       .populate('createdBy')
       .exec();
-    if (!updated || updated.isActive === false) throw new NotFoundException('Event not found');
+    if (!updated) throw new NotFoundException('Event not found');
     return updated;
   }
 
-  async softDelete(id: string): Promise<EventDocument> {
+  async delete(id: string): Promise<EventDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('Invalid event id');
     }
     const deleted = await this.eventModel
-      .findByIdAndUpdate(id, { isActive: false, deletedAt: new Date() }, { new: true })
+      .findByIdAndDelete(id)
+      .populate('childId')
+      .populate('createdBy')
       .exec();
     if (!deleted) throw new NotFoundException('Event not found');
     return deleted;

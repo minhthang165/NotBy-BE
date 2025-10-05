@@ -16,26 +16,42 @@ export class HealthStatusService {
   ) {}
 
    async create(
-    createHealthStatusDto: CreateHealthStatusDto,
-    file?: Express.Multer.File,
-  ): Promise<HealthStatusDocument> {
-    const { childId } = createHealthStatusDto;
+  createHealthStatusDto: CreateHealthStatusDto,
+  file?: Express.Multer.File,
+): Promise<HealthStatusDocument> {
+  const { childId, height, weight, ...rest } = createHealthStatusDto;
 
-    const baby = await this.babyModel.findById(childId);
-    if (!baby) {
-      throw new NotFoundException(`Baby with ID "${childId}" not found`);
-    }
-     let imageUrl: string | undefined;
-    if (file) {
-      imageUrl = await this.cloudinaryService.uploadImage(file);
-    }
-    const newStatus = new this.healthStatusModel({
-      ...createHealthStatusDto,
-      imageUrl,
-    });
-    await newStatus.save();
-    return newStatus.populate('childId');
+  const baby = await this.babyModel.findById(childId);
+  if (!baby) {
+    throw new NotFoundException(`Baby with ID "${childId}" not found`);
   }
+
+  let imageUrl: string | undefined;
+  if (file) {
+    imageUrl = await this.cloudinaryService.uploadImage(file);
+  }
+
+  // --- SỬA LẠI Ở ĐÂY ---
+  const newStatusPayload = {
+    ...rest, 
+    childId,
+    height: Number(height), 
+    weight: Number(weight), 
+    imageUrl,
+  };
+
+  const newStatus = new this.healthStatusModel(newStatusPayload);
+  
+  try {
+    await newStatus.save();
+  } catch (error) {
+    // In ra lỗi validation để gỡ lỗi nếu cần
+    console.error("Mongoose validation error:", error);
+    throw new BadRequestException(error.message);
+  }
+
+  return newStatus.populate('childId');
+}
 
  async findAll(
     childId?: string,

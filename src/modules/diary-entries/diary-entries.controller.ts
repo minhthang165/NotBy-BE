@@ -10,8 +10,9 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  UploadedFiles,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { Express } from 'express';
 import { DiaryEntriesService } from './diary-entries.service';
@@ -24,33 +25,32 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 export class DiaryEntriesController {
   constructor(private readonly diaryEntriesService: DiaryEntriesService) {}
 
-  @Post()
-  @UseInterceptors(FileInterceptor('image'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: CreateDiaryEntryDto }) 
-  create(
-    @Body() createDiaryEntryDto: CreateDiaryEntryDto,
-    @UploadedFile() image?: Express.Multer.File, 
-  ) {
-    return this.diaryEntriesService.create(createDiaryEntryDto, image);
-  }
+ @Post()
+@UseInterceptors(FilesInterceptor('images'))
+@ApiConsumes('multipart/form-data')
+@ApiBody({ type: CreateDiaryEntryDto })
+create(
+  @Body() createDiaryEntryDto: CreateDiaryEntryDto,
+  @UploadedFiles() images?: Express.Multer.File[],
+) {
+  return this.diaryEntriesService.create(createDiaryEntryDto, images);
+}
 
 @Patch(':id')
-@ApiConsumes('multipart/form-data')
-@UseInterceptors(FileInterceptor('image'))
+@UseInterceptors(FilesInterceptor('images')) 
 update(
   @Param('id') id: string,
   @Body() updateDiaryEntryDto: UpdateDiaryEntryDto,
-  @UploadedFile() image?: Express.Multer.File, 
+  @UploadedFiles() images?: Express.Multer.File[], 
 ) {
-  return this.diaryEntriesService.update(id, updateDiaryEntryDto, image);
+  return this.diaryEntriesService.update(id, updateDiaryEntryDto, images);
 }
 
-    @Get()
-    @ApiQuery({ name: 'childId', required: false, type: String })
-    @ApiQuery({ name: 'page', required: false, type: Number })
-    @ApiQuery({ name: 'limit', required: false, type: Number })
-    @ApiQuery({ name: 'sortBy', required: false, type: String })
+ @Get()
+  @ApiQuery({ name: 'childId', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sortBy', required: false, type: String })
 	@ApiQuery({ name: 'sortOrder', required: false, type: String })
     async findAll(
   @Query('childId') childId?: string,

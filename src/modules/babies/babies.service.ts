@@ -96,6 +96,4 @@ export class BabiesService {
 		}
 		return deletedBaby;
 	}
-
-
 }

@@ -35,14 +35,15 @@ async findAll(
     sortBy = 'createdAt',
     sortOrder: 'asc' | 'desc' = 'desc',
   ): Promise<{ data: MedicalRecordDocument[]; total: number; page: number; limit: number }> {
-    const query: FilterQuery<MedicalRecordDocument> = {};
+    const query: FilterQuery<MedicalRecordDocument> = { isActive: true };
+    
     if (childId) {
       if (!Types.ObjectId.isValid(childId)) {
-        throw new BadRequestException('Invalid Baby ID format in query');
+        throw new BadRequestException('Invalid childId');
       }
-      query.childId = new Types.ObjectId(childId);
+      query.childId = childId;
     }
-    
+
     const total = await this.medicalRecordModel.countDocuments(query);
     const data = await this.medicalRecordModel
       .find(query)

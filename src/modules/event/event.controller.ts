@@ -56,6 +56,6 @@ export class EventController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.eventService.softDelete(id);
+    return this.eventService.delete(id);
   }
 }

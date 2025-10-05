@@ -23,31 +23,34 @@ export class DiaryEntriesService {
   ) {}
 
   async create(
-    createDiaryEntryDto: CreateDiaryEntryDto,
-    file?: Express.Multer.File,
-  ): Promise<DiaryEntryDocument> {
-    const { childId } = createDiaryEntryDto;
+  createDiaryEntryDto: CreateDiaryEntryDto,
+  files?: Express.Multer.File[],
+): Promise<DiaryEntryDocument> {
+  const { childId } = createDiaryEntryDto;
 
-    const baby = await this.babyModel.findById(childId);
-    if (!baby) {
-      throw new NotFoundException(`Baby with ID "${childId}" not found`);
-    }
-
-    let imageUrl: string | undefined;
-    if (file) {
-      imageUrl = await this.cloudinaryService.uploadImage(file);
-    }
-
-    const newEntry = new this.diaryEntryModel({
-      ...createDiaryEntryDto,
-      imageUrl,
-    });
-
-    await newEntry.save();
-    return newEntry.populate('childId');
+  const baby = await this.babyModel.findById(childId);
+  if (!baby) {
+    throw new NotFoundException(`Baby with ID "${childId}" not found`);
   }
 
-  async findAll( // Corrected method name
+  let imageUrls: string[] = [];
+  if (files && files.length > 0) {
+   
+    imageUrls = await Promise.all(
+      files.map(file => this.cloudinaryService.uploadImage(file))
+    );
+  }
+
+  const newEntry = new this.diaryEntryModel({
+    ...createDiaryEntryDto,
+    imageUrls, 
+  });
+
+  await newEntry.save();
+  return newEntry.populate('childId');
+}
+
+  async findAll( 
     childId?: string,
     page = 0,
     limit = 10,
@@ -89,39 +92,39 @@ export class DiaryEntriesService {
     }
     return entry;
   }
+// trong file: diary-entries.service.ts
 
-  async update(
-    id: string,
-    updateDiaryEntryDto: UpdateDiaryEntryDto,
-    file?: Express.Multer.File,
-  ): Promise<DiaryEntryDocument> {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new NotFoundException(`Diary entry with id "${id}" not found`);
-    }
-
-    const updatePayload: any = { ...updateDiaryEntryDto };
-
-    if (file) {
-      updatePayload.imageUrl = await this.cloudinaryService.uploadImage(file);
-    }
-    
-    if (updatePayload.height !== undefined) {
-      updatePayload.height = Number(updatePayload.height);
-    }
-    if (updatePayload.weight !== undefined) {
-      updatePayload.weight = Number(updatePayload.weight);
-    }
-
-    const updated = await this.diaryEntryModel
-      .findByIdAndUpdate(id, updatePayload, { new: true })
-      .populate('childId')
-      .exec();
-    if (!updated) {
-      throw new NotFoundException(`Diary entry with id "${id}" not found`);
-    }
-    return updated;
+async update(
+  id: string,
+  updateDiaryEntryDto: UpdateDiaryEntryDto,
+  files?: Express.Multer.File[], // <-- 1. Sửa thành mảng files
+): Promise<DiaryEntryDocument> {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new NotFoundException(`Diary entry with id "${id}" not found`);
   }
 
+  const updatePayload: any = { ...updateDiaryEntryDto };
+
+  // 2. Sửa lại logic upload cho nhiều file
+  if (files && files.length > 0) {
+    const imageUrls = await Promise.all(
+      files.map(file => this.cloudinaryService.uploadImage(file))
+    );
+    updatePayload.imageUrls = imageUrls; // Gán mảng các URL
+  }
+  
+  // ... (logic chuyển đổi height/weight nếu có)
+
+  const updated = await this.diaryEntryModel
+    .findByIdAndUpdate(id, updatePayload, { new: true })
+    .populate('childId')
+    .exec();
+
+  if (!updated) {
+    throw new NotFoundException(`Diary entry with id "${id}" not found`);
+  }
+  return updated;
+}
   async delete(id: string): Promise<DiaryEntryDocument> {
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid diary entry ID');

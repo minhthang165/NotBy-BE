@@ -32,11 +32,11 @@ export class MedicalRecordsController {
   })
   
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách health status (có thể lọc theo bé, phân trang)' })
-  @ApiQuery({ name: 'childId', required: false, type: String })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'sortBy', required: false, type: String })
+  @ApiOperation({ summary: 'Get all medical records with pagination' })
+  @ApiQuery({ name: 'childId', required: false })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
   @ApiQuery({ name: 'sortOrder', required: false, enum: ['asc', 'desc'] })
   async findAll(
     @Query('childId') childId?: string,

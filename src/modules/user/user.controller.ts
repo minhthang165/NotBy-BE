@@ -63,4 +63,11 @@ export class UserController {
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
+
+  @Get('/role/:role')
+  async getByRole(@Param('role') role: string) {
+    const users = await this.userService.getByRole(role);
+    if (!users || users.length === 0) throw new NotFoundException('Users not found');
+    return users;
+  }
 }

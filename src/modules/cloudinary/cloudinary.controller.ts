@@ -36,6 +36,7 @@ export class CloudinaryController {
     } else if (mimetype.startsWith('video/')) {
       return this.cloudinaryService.uploadVideo(file);
     } else {
+      // Handle all other file types including documents with our enhanced file upload method
       return this.cloudinaryService.uploadFile(file);
     }
   }

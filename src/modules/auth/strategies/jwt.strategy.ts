@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';// Đường dẫn có thể khác
 import { UserService } from 'src/modules/user/user.service';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) { // Mặc định tên là 'jwt'
@@ -12,7 +13,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) { // Mặc định t
     private readonly userService: UserService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        // Try to extract the token from cookie first
+        (request: Request) => {
+          let token = null;
+          if (request && request.cookies) {
+            token = request.cookies['jwtToken'] || request.cookies['auth'];
+          }
+          return token;
+        },
+        // Fall back to Authorization header
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
     });

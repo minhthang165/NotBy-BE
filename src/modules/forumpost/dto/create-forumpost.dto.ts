@@ -1,12 +1,8 @@
 import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNull } from 'typeorm';
 
-export class CreateArticleDto {
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty({ description: 'Category ID' })
-    CategoryId: string;
-
+export class CreateForumpostDto {
     @IsNotEmpty()
     @IsString()
     @ApiProperty({ description: 'Title' })
@@ -34,18 +30,4 @@ export class CreateArticleDto {
     @IsNumber()
     @ApiProperty({ description: 'Number of views' })
     Views: number;
-
-    @IsNotEmpty()
-    @IsString({ each: true })
-    @ApiProperty({ description: 'Tags', type: [String] })
-    Tags : string[];
-
-    @IsNumber()
-    @ApiProperty({ description: 'Number of minutes' })
-    ReadTime: number;
-    
-    @IsOptional()
-    @IsString()
-    @ApiProperty({ description: 'Description', required: false })
-    Description?: string;
 }

@@ -7,6 +7,7 @@ import { join } from 'path';
 import { configSwagger } from './configs/api-docs.config';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { AuthGuard } from '@nestjs/passport';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const logger = new Logger(bootstrap.name);
@@ -15,11 +16,18 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor(reflector));
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters();
+  app.use(cookieParser()); // Add cookie parser middleware
+  
+  // Trust proxy headers - critical for cookies in production with secure flag
+  app.set('trust proxy', 1);
   app.enableCors({
     origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization,Accept,Origin,X-Requested-With,x-access-token',
+    exposedHeaders: ['Set-Cookie', 'Authorization', 'x-access-token'],
+    credentials: true,
   });
+  
   configSwagger(app);
  
   app.useStaticAssets(join(__dirname, './served'));

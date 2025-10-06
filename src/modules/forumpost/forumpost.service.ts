@@ -77,6 +77,18 @@ export class ForumPostService {
       }
       existingForumpost.File = file;
     }
+    if (updateForumpostDto.Title !== undefined) {
+      existingForumpost.Title = updateForumpostDto.Title;
+    }
+    if (updateForumpostDto.Content !== undefined) {
+      existingForumpost.Content = updateForumpostDto.Content;
+    }
+    if (updateForumpostDto.Likes !== undefined) {
+      existingForumpost.Likes = updateForumpostDto.Likes;
+    }
+    if (updateForumpostDto.Views !== undefined) {
+      existingForumpost.Views = updateForumpostDto.Views;
+    }
     return existingForumpost.save();
   }
 

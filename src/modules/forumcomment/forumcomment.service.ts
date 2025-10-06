@@ -90,6 +90,12 @@ export class ForumCommentService {
       }
       existingForumComment.File = file;
     }
+    if (updateForumCommentDto.Likes !== undefined) {
+      existingForumComment.Likes = updateForumCommentDto.Likes;
+    }
+    if (updateForumCommentDto.Content !== undefined) {
+      existingForumComment.Content = updateForumCommentDto.Content;
+    }
     return existingForumComment.save();
   }
 
@@ -112,5 +118,16 @@ export class ForumCommentService {
       .populate('CreatedBy')
       .populate('File')
       .exec();
+  }
+
+  async findByPost(postId: string): Promise<ForumCommentDocument[]> {
+    const post = await this.forumpostModel.findById(postId);
+    if (!post) {
+      throw new NotFoundException(`Forum post with id ${postId} not found`);
+    }
+    return this.forumCommentModel.find({ Post: post._id })
+    .populate('CreatedBy')
+    .populate('File')
+    .exec();
   }
 }

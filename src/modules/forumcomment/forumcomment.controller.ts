@@ -72,4 +72,13 @@ export class ForumCommentController {
     }
     return forumComments;
   }
+
+  @Get('post/:postId')
+  async findByPost(@Param('postId') postId: string) {
+    const forumComments = await this.forumCommentService.findByPost(postId);
+    if (!forumComments || forumComments.length === 0) {
+      throw new NotFoundException(`No forum comments found for post with id ${postId}`);
+    }
+    return forumComments;
+  }
 }

@@ -27,6 +27,7 @@ async function bootstrap() {
     exposedHeaders: ['Set-Cookie', 'Authorization', 'x-access-token'],
     credentials: true,
   });
+  
   configSwagger(app);
  
   app.useStaticAssets(join(__dirname, './served'));

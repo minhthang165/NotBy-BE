@@ -45,17 +45,17 @@ export class AuthController {
         const encodedToken = encodeURIComponent(req.user.token);
         
         // For Deploy
-        // if (req.user.role == "Admin") {
-        //     return res.redirect(`https://notby-be-8q9y.onrender.com/api-docs?token=${encodedToken}`);
-        // } else {
-        //     return res.redirect(`https://www.notby.id.vn/dashboard?token=${encodedToken}`);
-        // }
+        if (req.user.role == "Admin") {
+            return res.redirect(`https://notby-be-8q9y.onrender.com/api-docs?token=${encodedToken}`);
+        } else {
+            return res.redirect(`https://www.notby.id.vn/dashboard?token=${encodedToken}`);
+        }
 
         //For Localhost Testing
-        if (req.user.role == "Admin") {
-            return res.redirect(`http://localhost:3000/dashboard?token=${encodedToken}`);
-        } else {
-            return res.redirect(`http://localhost:3000/dashboard?token=${encodedToken}`);
-        }
+        // if (req.user.role == "Admin") {
+        //     return res.redirect(`http://localhost:3000/dashboard?token=${encodedToken}`);
+        // } else {
+        //     return res.redirect(`http://localhost:3000/dashboard?token=${encodedToken}`);
+        // }
     }
 }

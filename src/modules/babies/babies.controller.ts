@@ -12,28 +12,30 @@ export class BabiesController {
   async create(@Body() createBabyDto: CreateBabyDto) {
     return await this.babiesService.create(createBabyDto);
   }
-
-  @Get()
-  @ApiQuery({ name: 'pageNumber', required: false, type: Number })
-	@ApiQuery({ name: 'pageSize', required: false, type: Number })
-	@ApiQuery({ name: 'searchPhase', required: false, type: String })
-	@ApiQuery({ name: 'sortBy', required: false, type: String })
-	@ApiQuery({ name: 'sortOrder', required: false, type: String })
-  async findAll(
+@Get()
+@ApiQuery({ name: 'pageNumber', required: false, type: Number })
+@ApiQuery({ name: 'pageSize', required: false, type: Number })
+@ApiQuery({ name: 'searchPhase', required: false, type: String })
+@ApiQuery({ name: 'sortBy', required: false, type: String })
+@ApiQuery({ name: 'sortOrder', required: false, type: String })
+@ApiQuery({ name: 'parentId', required: false, type: String }) 
+async findAll(
     @Query('searchPhase') searchPhase?: string,
     @Query('pageNumber') page = '0',
     @Query('pageSize') limit = '10',
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'asc',
-  ) {
+    @Query('parentId') parentId?: string, 
+) {
     return await this.babiesService.findAll(
-      searchPhase,
-      parseInt(page, 10),
-      parseInt(limit, 10),
-      sortBy,
-      sortOrder,
+        searchPhase,
+        parseInt(page, 10),
+        parseInt(limit, 10),
+        sortBy,
+        sortOrder,
+        parentId,
     );
-  }
+}
 
   @Get(':id')
   async findOne(@Param('id') id: string) {

@@ -16,46 +16,51 @@ export class BabiesService {
 		return await newBaby.save();
 	}
 
-	async findAll(
+async findAll(
     searchPhase?: string,
     page = 0,
     limit = 10,
     sortBy?: string,
     sortOrder: 'asc' | 'desc' = 'asc',
-  ): Promise<any> {
+    parentId?: string,  
+): Promise<any> {
     const query: FilterQuery<Baby> = {};
 
-    if (searchPhase) {
-      query.$or = [
-        { firstName: { $regex: searchPhase, $options: 'i' } },
-        { lastName: { $regex: searchPhase, $options: 'i' } },
-        { 
-          $expr: { 
-            $regexMatch: { 
-              input: { $concat: ['$firstName', ' ', '$lastName'] },
-              regex: searchPhase,
-              options: 'i'
-            } 
-          } 
-        }
-      ];
+    if (parentId) {
+        query.parentId = new Types.ObjectId(parentId);
     }
 
-	const total = await this.babyModel.countDocuments(query);
+    if (searchPhase) {
+        query.$or = [
+            { firstName: { $regex: searchPhase, $options: 'i' } },
+            { lastName: { $regex: searchPhase, $options: 'i' } },
+            { 
+                $expr: { 
+                    $regexMatch: { 
+                        input: { $concat: ['$firstName', ' ', '$lastName'] },
+                        regex: searchPhase,
+                        options: 'i'
+                    } 
+                } 
+            }
+        ];
+    }
 
-	const babies = await this.babyModel
-		.find(query)
-		.sort({ [sortBy ?? 'created_at']: sortOrder === 'asc' ? 1 : -1 })
-		.populate('parentId')
-		.skip(page * limit)
-		.limit(limit);
+    const total = await this.babyModel.countDocuments(query);
 
-	return {
-		total,
-		page,
-		limit,
-		babies,
-	};
+    const babies = await this.babyModel
+        .find(query)
+        .sort({ [sortBy ?? 'created_at']: sortOrder === 'asc' ? 1 : -1 })
+        .populate('parentId')
+        .skip(page * limit)
+        .limit(limit);
+
+    return {
+        total,
+        page,
+        limit,
+        babies,
+    };
 }
 
 	async findOne(id: string): Promise<Baby> {

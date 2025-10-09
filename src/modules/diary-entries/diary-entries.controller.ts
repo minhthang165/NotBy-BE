@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
   UseInterceptors,
   UploadedFile,
   Query,
@@ -17,6 +18,7 @@ import { Express } from 'express';
 import { DiaryEntriesService } from './diary-entries.service';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
+
 
 @ApiTags('DiaryEntries')
 @Controller('diary-entries')

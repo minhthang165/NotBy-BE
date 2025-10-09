@@ -24,17 +24,17 @@ export class User extends BaseEntity {
 	@Prop({ required: true })
 	lastName: string;
 	
-	@Prop({ required: true })
+	@Prop()
 	dob: Date;
 
-	@Prop({ required: true, unique: true })
+	@Prop()
 	phoneNumber: string;
 
     @Prop({ unique: true })
     email: string;
 
     @Prop()
-    name: string;
+	gender : string;
 
     @Prop()
     googleId: string;

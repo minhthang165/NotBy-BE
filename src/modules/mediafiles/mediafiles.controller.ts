@@ -49,4 +49,18 @@ export class MediaFilesController {
     if (!deletedMediaFile) throw new NotFoundException('Media file not found');
     return deletedMediaFile;
   }
+
+  @Get('fileType/:fileType')
+  async findByFileType(@Param('fileType') fileType: string) {
+    const mediaFiles = await this.mediaFilesService.findByFileType(fileType);
+    if (!mediaFiles || mediaFiles.length === 0) throw new NotFoundException('Media files not found');
+    return mediaFiles;
+  }
+
+  @Get('fileName/:fileName')
+  async findByFileName(@Param('fileName') fileName: string) {
+    const mediaFiles = await this.mediaFilesService.findByFileName(fileName);
+    if (!mediaFiles || mediaFiles.length === 0) throw new NotFoundException('Media files not found');
+    return mediaFiles;
+  }
 }

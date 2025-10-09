@@ -18,7 +18,7 @@ export class ArticleService {
   ) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
-    const { CategoryId, Author, Title, Content, FileId, Likes, Views } =
+    const { CategoryId, Author, Title, Content, FileId, Likes, Views, Tags, ReadTime, Description } =
       createArticleDto;
 
     const category = await this.categoryModel.findById(CategoryId);
@@ -31,9 +31,12 @@ export class ArticleService {
       throw new NotFoundException(`Author with id ${Author} not found`);
     }
 
-    const file = await this.mediaFilesModel.findById(FileId);
+    let file = null;
+    if (FileId) {
+      file = await this.mediaFilesModel.findById(FileId); 
     if (!file) {
       throw new NotFoundException(`Media file with id ${FileId} not found`);
+      }
     }
 
     const newArticle = new this.articleModel({
@@ -44,6 +47,9 @@ export class ArticleService {
       File: file,
       Likes: Likes ?? 0,
       Views: Views ?? 0,
+      Tags: Tags ?? [],
+      ReadTime: ReadTime ?? 0,
+      Description: Description ?? '',
     });
 
     return newArticle.save();
@@ -59,12 +65,44 @@ export class ArticleService {
   }
 
   async update(id: string, updateArticleDto: UpdateArticleDto): Promise<ArticleDocument | null> {
-    return this.articleModel
-      .findByIdAndUpdate(id, updateArticleDto, { new: true })
-      .populate('Category')
-      .populate('Author')
-      .populate('File')
-      .exec();
+    const article = await this.articleModel.findById(id);
+    if (!article) {
+      throw new NotFoundException(`Article with id ${id} not found`);
+    }
+    
+    if (updateArticleDto.CategoryId) {
+      const category = await this.categoryModel.findById(updateArticleDto.CategoryId);
+      if (!category) {
+        throw new NotFoundException(`Category with id ${updateArticleDto.CategoryId} not found`);
+      }
+      article.Category = category;
+    }
+    
+    if (updateArticleDto.FileId) {
+      const file = await this.mediaFilesModel.findById(updateArticleDto.FileId);
+      if (!file) {
+        throw new NotFoundException(`Media file with id ${updateArticleDto.FileId} not found`);
+      }
+      article.File = file;
+    }
+
+    if (updateArticleDto.Author) {
+      const author = await this.userModel.findById(updateArticleDto.Author);
+      if (!author) {
+        throw new NotFoundException(`Author with id ${updateArticleDto.Author} not found`);
+      }
+      article.Author = author;
+    }
+    
+    if (updateArticleDto.Title) article.Title = updateArticleDto.Title;
+    if (updateArticleDto.Content) article.Content = updateArticleDto.Content;
+    if (updateArticleDto.Likes !== undefined) article.Likes = updateArticleDto.Likes;
+    if (updateArticleDto.Views !== undefined) article.Views = updateArticleDto.Views;
+    if (updateArticleDto.Tags) article.Tags = updateArticleDto.Tags;
+    if (updateArticleDto.ReadTime !== undefined) article.ReadTime = updateArticleDto.ReadTime;
+    if (updateArticleDto.Description) article.Description = updateArticleDto.Description;
+    
+    return article.save();
   }
 
   async findAll(): Promise<ArticleDocument[]> {

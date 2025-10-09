@@ -3,11 +3,12 @@ import { Constructor } from './../../../../node_modules/ts-jest/node_modules/typ
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { NextFunction } from 'express';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Category } from 'src/modules/category/entities/category.entity';
 import { MediaFiles } from 'src/modules/mediafiles/entities/mediafile.entity';
+import { group } from 'console';
 
-export type ArticleDocument = HydratedDocument<Article>
+export type ForumPostDocument = HydratedDocument<ForumPost>
 
+// auto generate createdAt and updatedAt fields in mongoDB
 @Schema({
     timestamps: {
         createdAt: 'created_at',
@@ -17,39 +18,32 @@ export type ArticleDocument = HydratedDocument<Article>
         getters: true,
         virtuals: true,
     },
+    
 })
-export class Article{
-    @Prop({ type: Types.ObjectId, ref: () => Category })
-    Category: Category;
+export class ForumPost {
     @Prop()
     Title: string;
     @Prop()
     Content: string;
-    @Prop({ type: Types.ObjectId, ref: () => MediaFiles })
-    File: MediaFiles;
-    @Prop({ type: Types.ObjectId, ref: () => User })
-    Author: User;
     @Prop()
     Likes: number;
     @Prop()
     Views: number;
-    @Prop()
-    Tags : string[];
-    @Prop()
-    ReadTime: number;
-    @Prop()
-    Description: string;
+    @Prop({ type: Types.ObjectId, ref: () => User })
+    Author: User;
+    @Prop({ type: Types.ObjectId, ref: () => MediaFiles })
+    File: MediaFiles;
 }
 
-export const ArticleSchema = SchemaFactory.createForClass(Article);
-export const ArticleSchemaFactory = () => {
-    const articleSchema = ArticleSchema;
+export const ForumPostSchema = SchemaFactory.createForClass(ForumPost);
+export const ForumPostSchemaFactory = () => {
+    const forumPostSchema = ForumPostSchema;
 
-    articleSchema.pre('findOneAndDelete', async function (next: NextFunction) {
+    forumPostSchema.pre('findOneAndDelete', async function (next: NextFunction) {
         // OTHER USEFUL METHOD: getOptions, getPopulatedPaths, getQuery = getFilter, getUpdate
-        const article = await this.model.findOne(this.getFilter());
+        const mediaFile = await this.model.findOne(this.getFilter());
         await Promise.all([]);
         return next();
     });
-    return articleSchema;
+    return forumPostSchema;
 };

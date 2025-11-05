@@ -18,10 +18,10 @@ export type UserDocument = HydratedDocument<User>
 })
 export class User extends BaseEntity {
 	
-	@Prop({ required: true })
+	@Prop()
 	firstName: string;
 
-	@Prop({ required: true })
+	@Prop()
 	lastName: string;
 	
 	@Prop()

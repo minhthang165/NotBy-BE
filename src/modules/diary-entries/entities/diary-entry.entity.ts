@@ -4,10 +4,7 @@ import { BaseEntity } from 'src/modules/shared/base.entity';
 
 export type DiaryEntryDocument = HydratedDocument<DiaryEntry>;
 
-export enum DiaryType {
-  DIARY = 'diary',
-  MILESTONE = 'milestone',
-}
+
 
 export enum DiaryCategory {
   VAN_DONG = 'vận động',
@@ -31,14 +28,12 @@ export class DiaryEntry extends BaseEntity {
   constructor(entry: {
     title: string;
     content: string;
-    diaryType: DiaryType;
     category: DiaryCategory;
     childId: mongoose.Types.ObjectId;
   }) {
     super();
     this.title = entry?.title;
     this.content = entry?.content;
-    this.diaryType = entry?.diaryType;
     this.category = entry?.category;
     this.childId = entry?.childId;
   }
@@ -48,9 +43,6 @@ export class DiaryEntry extends BaseEntity {
 
   @Prop({ type: String, required: true })
   content: string;
-
-  @Prop({ type: String, enum: DiaryType, required: true })
-  diaryType: DiaryType;
 
   @Prop({ type: String, enum: DiaryCategory, required: true })
   category: DiaryCategory;

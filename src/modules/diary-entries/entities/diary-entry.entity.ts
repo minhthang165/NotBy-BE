@@ -4,8 +4,6 @@ import { BaseEntity } from 'src/modules/shared/base.entity';
 
 export type DiaryEntryDocument = HydratedDocument<DiaryEntry>;
 
-
-
 export enum DiaryCategory {
   VAN_DONG = 'vận động',
   NGON_NGU = 'ngôn ngữ',

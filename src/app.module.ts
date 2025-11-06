@@ -23,7 +23,7 @@ import { HealthStatusModule } from './modules/health-status/health-status.module
 import { MedicalRecordsModule } from './modules/medical-record/medical-record.module';
 import { EventModule } from './modules/event/event.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
-
+import { TimetableModule } from "./modules/timeable/timeable.module";
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -53,6 +53,8 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     GroupModule,
     GroupMemberModule,
     DashboardModule,
+    TimetableModule,
+
   ],
   controllers: [AppController],
   providers: [
